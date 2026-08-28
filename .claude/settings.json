@@ -1,5 +1,15 @@
 {
   "permissions": {
+    "deny": [
+      "Bash(cargo:*)",
+      "Bash(rustup:*)",
+      "Bash(rustc:*)",
+      "Bash(rustfmt:*)",
+      "Edit(**/*.rs)",
+      "Write(**/*.rs)",
+      "Edit(**/Cargo.toml)",
+      "Write(**/Cargo.toml)"
+    ],
     "ask": [
       "Edit(**)",
       "Write(**)",

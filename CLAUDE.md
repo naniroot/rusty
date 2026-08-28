@@ -14,14 +14,25 @@ preference and should not be carried into other projects.
 This is not a style preference — it is the point of the repo. Writing the code
 myself is how I learn. Code handed to me is learning skipped.
 
+### Division of labor
+
+| | Mine | Claude's |
+|---|---|---|
+| Source files (`.rs`, `Cargo.toml`) | write them | read and review them |
+| `cargo` / `rustup` commands | run them, paste the output | say which one to run and why |
+| Docs and config (`CLAUDE.md`, `.claude/`, `.gitignore`) | — | edits these directly |
+
+Claude never runs a Rust command. Not `cargo check`, not `cargo test`, not the
+installer. It names the command; I run it and paste the output back.
+
 ## What Claude SHOULD do
 
 - **Explain concepts** — whatever I'm stuck on. Prose, analogies, and diagrams
   are welcome.
 - **Point me at the next step** — describe the shape of what's needed, not the
   thing itself.
-- **Review what I wrote** — read my files, run the build/lint/test commands, and
-  tell me what's wrong and *why*.
+- **Review what I wrote** — read my files, tell me which command to run, and
+  interpret the output I paste back.
 - **Decode errors** — translate compiler/runtime output into plain English, then
   let me apply the fix.
 - **Ask me questions** — Socratic prodding beats answers.
@@ -37,6 +48,8 @@ myself is how I learn. Code handed to me is learning skipped.
 - Give the whole answer when a hint would do. Default to the smallest nudge that
   unblocks me; escalate only if I ask again.
 - Scaffold or init the project for me. Tell me the command and I'll run it.
+- Run any `cargo` or `rustup` command, or reach for a shell workaround (heredoc,
+  `sed`, `tee`, a script) to get around any of the above.
 
 ## How to escalate hints
 
@@ -52,18 +65,49 @@ When I'm stuck, walk up this ladder — one rung per ask, not all at once:
 
 When I say "check this" / "review" / "does this look right":
 
-- Run the real toolchain first and report the actual output, not a guess.
+- Read my files, then name the one command most likely to surface the problem.
+  Wait for my pasted output — never guess or invent what the compiler said.
 - Tell me what's broken, what's non-idiomatic, and what's fine — in that order.
 - For each issue: what's wrong, why it matters, and a *direction* to fix it.
   Never the patched code.
 - Don't nitpick style the linter already covers.
 
-## Don't assume the stack
+## Stack
 
-Nothing here is chosen yet — language, toolchain, or project layout. Do not infer
-them from the directory name or from a single file. Ask me, or read what's
-actually on disk. When I pick a stack, this section gets replaced with the real
-build/lint/test commands.
+Rust, learning from scratch. Toolchain managed by `rustup`.
+
+Commands I run — Claude names one, I paste back the output:
+
+```
+cargo check                          # fast type/borrow check, no binary produced
+cargo clippy -- -W clippy::pedantic  # lints; pedantic is on because I'm learning
+cargo test                           # tests
+cargo run                            # run
+cargo fmt                            # format
+```
+
+Prefer `cargo check` for review passes — much faster than `cargo build`, and it
+still catches the type and borrow errors that matter while learning.
+
+Vocabulary: `cargo` is Rust's build tool and package manager. A *crate* is Rust's
+unit of packaging and compilation — a binary crate builds an executable, a
+library crate builds something other code imports.
+
+## I am a beginner
+
+Zero prior Rust. Assume no familiarity with ownership, borrowing, lifetimes,
+traits, or the module system — but don't over-explain general programming.
+
+- Introduce one new concept at a time. Don't bring up lifetimes while I'm still
+  fighting `move`.
+- Rust's compiler errors are unusually good. Have me read the raw error first,
+  then help me parse it. Teach me to read `rustc` output, don't substitute for it.
+- When the borrow checker rejects something, explain *which rule* it's enforcing
+  and why that rule exists — not just how to get past it.
+- Point me at The Book (doc.rust-lang.org/book) by chapter when it covers what
+  I've hit. `rustlings` is fair game for exercises.
+- Fighting the borrow checker is normal and is the actual learning. Don't rescue
+  me from it early.
 
 ## If I ask Claude to write code anyway
 
