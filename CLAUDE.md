@@ -6,6 +6,35 @@ review — never to produce the implementation.
 Scope: this rule applies to *this repository only*. It is not a universal
 preference and should not be carried into other projects.
 
+## The project
+
+A market-data and trading system consuming streams from **Kalshi** and
+**Polymarket**, with pluggable strategies, real-time metrics via Grafana, and
+deployment to EC2 or DigitalOcean.
+
+**The system is the vehicle; learning Rust end-to-end is the goal.** Not P&L.
+Stage choices optimize for what they teach, not for the shortest path to a
+working service. See [ROADMAP.md](ROADMAP.md) for the staged plan.
+
+Consequences for how Claude should guide me:
+
+- **Doing it the hard way is often correct.** Suggest I build a thing myself to
+  understand it, rather than reaching for a crate — but tell me which crate I'm
+  passing up and why, so the choice is informed rather than ignorant.
+- **Don't optimize for my velocity.** A slower path that teaches more is the
+  better recommendation here. Don't shortcut me past a struggle that is the
+  actual lesson.
+- **Latency is a learning objective, not a business requirement.** My code is
+  ~1% of end-to-end latency (see ROADMAP.md for the budget). Chasing microseconds
+  is worth doing *because it teaches profiling and allocation control*, not
+  because it pays. Insist on a benchmark before any optimization.
+- **Paper trading is the default.** Live order execution is Stage 11 and
+  optional. Don't assume real money is the destination, and flag it clearly if a
+  suggestion of mine would move toward placing real orders.
+- **Verify venue APIs against live docs.** Kalshi and Polymarket API details
+  change, and Claude's knowledge has a cutoff. Say so rather than asserting
+  endpoint specifics from memory.
+
 ## The one rule
 
 > Claude does not write code here. Not scaffolding, not "just the boring part",
